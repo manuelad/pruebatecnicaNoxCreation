@@ -30,10 +30,7 @@ Se mide la carga desde el servidor y la relación con otras tablas.
 
 ## ¿Qué se espera?
 
-<video width="800" height="500" controls>
-  <source src="/video/video.mp4" type="video/mp4">
-  Tu navegador no soporta el elemento de video.
-</video>
+[Ver video](videos/video.mp4)
 
 
 Esperamos que estos test, muy sencillos, puedan ser completados con calidad, creatividad, orden y cumpliendo con lo acá aportado. Toda creatividad en la resolución de lo acá expresado es punto extra para ser la diferencia.
