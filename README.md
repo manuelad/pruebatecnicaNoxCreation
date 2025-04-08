@@ -30,7 +30,10 @@ Se mide la carga desde el servidor y la relación con otras tablas.
 
 ## ¿Qué se espera?
 
-[Ver video](video/video.mp4)
+<video width="640" height="360" controls>
+  <source src="https://u.pcloud.link/publink/show?code=XZfTFY5Zzkp5u8Vxj7LpcaupS2GOAmsRomhk" type="video/mp4">
+  Tu navegador no soporta el elemento de video.
+</video>
 
 
 Esperamos que estos test, muy sencillos, puedan ser completados con calidad, creatividad, orden y cumpliendo con lo acá aportado. Toda creatividad en la resolución de lo acá expresado es punto extra para ser la diferencia.
