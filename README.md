@@ -30,7 +30,7 @@ Se mide la carga desde el servidor y la relación con otras tablas.
 
 ## ¿Qué se espera?
 
-[Ver video en pCloud](https://u.pcloud.link/publink/show?code=XZfTFY5Zzkp5u8Vxj7LpcaupS2GOAmsRomhk)
+[Ver video en pCloud](https://u.pcloud.link/publink/show?code=XZogFY5Z3rUmCAhe6xpIvJltvsXG3mMLxdk0)
 
 
 Esperamos que estos test, muy sencillos, puedan ser completados con calidad, creatividad, orden y cumpliendo con lo acá aportado. Toda creatividad en la resolución de lo acá expresado es punto extra para ser la diferencia.
