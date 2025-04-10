@@ -1,4 +1,5 @@
 import { Button, HStack, Table, UseDialogReturn } from '@chakra-ui/react'
+import { ProductType } from '../modals/ProductCreateEdit'
 
 export const TableProduct = ({
     data,
@@ -6,9 +7,9 @@ export const TableProduct = ({
     setInitialize,
     onDelete
 }: {
-    data: Array<any>
+    data: Array<ProductType>
     dialog: UseDialogReturn,
-    setInitialize: (initialize: undefined | any) => void,
+    setInitialize: (initialize: undefined | ProductType) => void,
     onDelete: (id: string) => void
 }) => {
     return (
@@ -49,7 +50,7 @@ export const TableProduct = ({
                                 }}>Editar</Button>
                                 <Button variant="ghost" colorPalette={'red'} onClick={() => {
                                     setInitialize(product)
-                                    onDelete(product.id)
+                                    onDelete(product.id!)
                                 }}>Eliminar</Button>
                             </HStack>
                         </Table.Cell>

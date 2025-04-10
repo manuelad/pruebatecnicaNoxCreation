@@ -1,11 +1,11 @@
 import { createListCollection, Portal, Select } from "@chakra-ui/react"
 
 interface Props {
-    value: string
+    value?: string
     options: Array<{ label: string, value: string }>
     onSave: (categoryId: string) => void
 }
-
+// (e) => onSave(e.target.value)
 export const SelectCustom = ({
     value,
     options,
@@ -14,8 +14,9 @@ export const SelectCustom = ({
     const frameworks = createListCollection({
         items: options,
     })
+
     return (
-        <Select.Root collection={frameworks} onChange={(e: any) => onSave(e.target.value)} defaultValue={[value]}>
+        <Select.Root collection={frameworks} onChange={(e: any) => onSave(e.target.value)} defaultValue={[value || '']}>
             <Select.HiddenSelect />
             <Select.Control>
                 <Select.Trigger>

@@ -1,35 +1,45 @@
-import { Button, CloseButton, Dialog, Field, Input, Portal, Stack, UseDialogReturn } from "@chakra-ui/react"
-import { Fragment, useState } from "react"
 import { Toaster, toaster } from "@/components/ui/toaster"
+import { Button, CloseButton, Dialog, Field, Input, Portal, Stack, UseDialogReturn } from "@chakra-ui/react"
+import { FormEvent, Fragment, useState } from "react"
+
+export type ProductType = {
+    id?: string
+    name: string
+    price: number
+    quantity: number
+    categoryId?: string
+}
 
 export const ProductCreateEdit = ({
     initialize,
     dialog,
 }: {
-    initialize: undefined | any
+    initialize: undefined | ProductType
     dialog: UseDialogReturn
 }) => {
     const [loading, setLoading] = useState(false)
-    const [data, setData] = useState(initialize ? initialize : {
-        name: "",
-        price: "",
-        quantity: ""
-    })
+    const [data, setData] = useState<ProductType | undefined>(initialize)
 
-    const onSubmit = async (e: any) => {
+    const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         // Iniciar
         setLoading(true)
 
-        if (!initialize)
-            delete data.id
+        const res = await fetch('/api/products', {
+            method: initialize ? 'PUT' : 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+
 
         // Hacer script para guardar los datos
         const response = {
-            status: 200,
-            json: () => {
+            status: res.ok ? 200 : res.status,
+            json: async () => {
                 return {
-                    details: ""
+                    details: (await res.json())['details']
                 }
             },
         }
@@ -37,7 +47,7 @@ export const ProductCreateEdit = ({
 
         if (response.status == 200) {
             toaster.create({
-                title: "Producto creado",
+                title: `Producto ${initialize ? 'actualizado' : 'creado'} con exito`,
                 duration: 9000,
                 type: 'success'
             })
@@ -76,28 +86,28 @@ export const ProductCreateEdit = ({
                                         </Field.Root>
                                         <Field.Root>
                                             <Field.Label>Nombre</Field.Label>
-                                            <Input type="text" name="name" value={data.name} disabled={loading} onChange={e => {
+                                            <Input type="text" name="name" value={data?.name || ''} disabled={loading} onChange={e => {
                                                 setData({
-                                                    ...data,
+                                                    ...(data ? data : { name: '', price: 0, quantity: 0 }),
                                                     name: e.target.value
                                                 })
                                             }} />
                                         </Field.Root>
                                         <Field.Root>
                                             <Field.Label>Precio</Field.Label>
-                                            <Input type='text' name="price" value={data.price} disabled={loading} onChange={e => {
+                                            <Input type='text' name="price" value={data?.price || 0} disabled={loading} onChange={e => {
                                                 setData({
-                                                    ...data,
-                                                    price: e.target.value
+                                                    ...(data ? data : { name: '', price: 0, quantity: 0 }),
+                                                    price: Number(e.target.value)
                                                 })
                                             }} />
                                         </Field.Root>
                                         <Field.Root>
                                             <Field.Label>Cantidad</Field.Label>
-                                            <Input type='text' name="quantity" value={data.quantity} disabled={loading} onChange={e => {
+                                            <Input type='text' name="quantity" value={data?.quantity || 0} disabled={loading} onChange={e => {
                                                 setData({
-                                                    ...data,
-                                                    quantity: e.target.value
+                                                    ...(data ? data : { name: '', price: 0, quantity: 0 }),
+                                                    quantity: Number(e.target.value)
                                                 })
                                             }} />
                                         </Field.Root>

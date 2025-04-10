@@ -1,13 +1,14 @@
 import { CategoryType } from '@/backend/Types/CategoryType'
 import { SelectCustom } from '@/components/Select'
-import { Button, HStack, Table } from '@chakra-ui/react'
+import { Table } from '@chakra-ui/react'
+import { ProductType } from '../../test2/modals/ProductCreateEdit'
 
 export const TableProduct = ({
     data,
     categories,
     onSave,
 }: {
-    data: Array<any>
+    data: Array<ProductType>
     categories: Array<CategoryType>
     onSave: (productId: string, categoryId: string) => void,
 }) => {
@@ -37,7 +38,7 @@ export const TableProduct = ({
                                     label: e.name
                                 }))}
                                 onSave={(categoryId: string) => {
-                                    onSave(product.id, categoryId)
+                                    onSave(product.id!, categoryId)
                                 }}
                             />
                         </Table.Cell>

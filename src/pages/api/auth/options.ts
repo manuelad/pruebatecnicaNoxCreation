@@ -1,5 +1,5 @@
-import type { NextAuthOptions } from 'next-auth'
-import CredentialsProvider from 'next-auth/providers/credentials'
+import type { NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import jwt from 'jsonwebtoken';
 import { Manager } from '@/backend/models/engine';
 import { UserType } from '@/backend/Types/UserType';
@@ -41,7 +41,7 @@ export const options: NextAuthOptions = {
           email: user_data.email,
           phone: user_data.phone,
 
-        } as any
+        } as UserType
 
         // Generar el token JWT
         const secretKey = process.env.SECRET_KEY as string;

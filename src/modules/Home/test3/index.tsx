@@ -1,11 +1,14 @@
-import { Divider } from '@/components/Divider'
-import { Button, Card, Flex, Progress, Stack, Text } from '@chakra-ui/react'
-import { Fragment, useState } from 'react'
-import { Toaster, toaster } from "@/components/ui/toaster"
-import { TableProduct } from './component/TableProduct'
-import { PaginationCustom } from '@/components/PaginationCustom'
 import { CategoryType } from '@/backend/Types/CategoryType'
+import { Divider } from '@/components/Divider'
+import { PaginationCustom } from '@/components/PaginationCustom'
+import { Toaster, toaster } from "@/components/ui/toaster"
+import { scrollToElement } from '@/lib/settings'
+import { Button, Card, Flex, Progress, Stack, Text } from '@chakra-ui/react'
+import { useRouter } from 'next/router'
+import { Fragment, useEffect, useState } from 'react'
 import { FiRefreshCw } from 'react-icons/fi'
+import { ProductType } from '../test2/modals/ProductCreateEdit'
+import { TableProduct } from './component/TableProduct'
 
 export const Testing3 = ({
     categories
@@ -13,23 +16,37 @@ export const Testing3 = ({
     categories: Array<CategoryType>
 }) => {
     const [loading, setLoading] = useState(false)
-    const [data, setData] = useState([] as Array<any>)
+    const [data, setData] = useState([] as Array<ProductType>)
+    const [count, setCount] = useState(0)
+    const router = useRouter()
+    const { pageTest3 } = router.query
+    const page = Number(pageTest3) || undefined
 
+    useEffect(() => {
+        if (page === undefined) return
+        scrollToElement('test3')
+        load(page)
+    }, [page])
     // Debe cargar los datos
-    const onLoad = async () => {
-        setLoading(true)
 
+    const load = async (p: number) => {
+        setLoading(true)
         // Fragmento a modificar con la carga de los datos
+
+        const res = await fetch(`/api/products?page=${p}`)
         const response = {
-            status: 200,
-            json: () => {
-                return []
+            status: res.ok ? 200 : res.status,
+            json: async () => {
+                return await res.json()
             }
         }
         // Fin
 
+
         if (response.status == 200) {
-            setData(await response.json())
+            const { products, count: total } = await response.json()
+            setCount(total)
+            setData(products)
         }
         else {
             toaster.create({
@@ -39,19 +56,35 @@ export const Testing3 = ({
             })
         }
 
+
         setLoading(false)
     }
+
+
+    const onLoad = async () => {
+        await load(page || 1)
+    }
+
+
 
     // Guardar la categoria cuando se elija
     const onSave = async (productId: string, categoryId: string) => {
         setLoading(true)
 
-        const response = await fetch(`/api/products/relation/${productId}/${categoryId}/`, {
+        const res = await fetch(`/api/products/relation/${productId}/${categoryId}/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             }
         });
+
+        const response = {
+            status: res.ok ? 200 : res.status,
+            json: async () => {
+                return await res.json()
+            }
+        }
+
         if (response.status == 200) {
             toaster.create({
                 title: "Categoria asignada!",
@@ -61,7 +94,7 @@ export const Testing3 = ({
         }
         else {
             toaster.create({
-                title: "Error al relacionar producto con categoria",
+                title: (await response.json())['details'],
                 duration: 9000,
                 type: 'error'
             })
@@ -117,7 +150,7 @@ export const Testing3 = ({
                         onSave={onSave}
                     />
 
-                    <PaginationCustom />
+                    <PaginationCustom page={page} count={count} pageSearch='pageTest3' />
                 </Card.Body>
                 <Card.Footer />
             </Card.Root>

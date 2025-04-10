@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize } from "sequelize";
+import { DataTypes } from "sequelize";
 import { sequelize } from "./engine";
 
 export const UserModel = () => {
@@ -9,30 +9,30 @@ export const UserModel = () => {
             primaryKey: true,
         },
         isRemove: {
-            type: (Sequelize as any).BOOLEAN,
+            type: DataTypes.BOOLEAN,
             defaultValue: false
         },
         first_name: {
-            type: (Sequelize as any).STRING
+            type: DataTypes.STRING
         },
         last_name: {
-            type: (Sequelize as any).STRING
+            type: DataTypes.STRING
         },
         ci: {
-            type: (Sequelize as any).STRING
+            type: DataTypes.STRING
         },
         email: {
-            type: (Sequelize as any).STRING
+            type: DataTypes.STRING
         },
         phone: {
-            type: (Sequelize as any).STRING
+            type: DataTypes.STRING
         },
         username: {
-            type: (Sequelize as any).STRING,
+            type: DataTypes.STRING,
             unique: true,
         },
         password_hash: {
-            type: (Sequelize as any).STRING,
+            type: DataTypes.STRING,
             allowNull: true
         },
     }, {});

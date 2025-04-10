@@ -4,13 +4,13 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse<any>,
+    res: NextApiResponse,
 ) {
     // Eliminar
     if (req.method == 'DELETE') {
         try {
-            const { id } = req.query as any
-            const response = await Manager().Product.update(id, {
+            const { id } = req.query
+            const response = await Manager().Product.update((id as string), {
                 isRemove: true
             })
             res.status(200).json(response.toJSON());

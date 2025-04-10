@@ -1,41 +1,35 @@
 import { Divider } from '@/components/Divider'
-import { Button, Card, Field, Input, Stack, Text } from '@chakra-ui/react'
-import { Fragment, useState } from 'react'
 import { Toaster, toaster } from "@/components/ui/toaster"
+import { Button, Card, Field, Input, Stack, Text } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react'
+import { ChangeEvent, FormEvent, Fragment, useState } from 'react'
 
 export const Testing1 = () => {
     const session = useSession()
     const [loading, setLoading] = useState(false)
-    const [user] = useState(session.data?.user)
+    const [user, setUser] = useState({ ...session.data?.user })
 
-    const onSubmit = async (e: any) => {
+    const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const {
-            id,
-            first_name,
-            last_name,
-            ci,
-            email,
-            phone
-        } = e.target
-        const data = {
-            id: id.value,
-            first_name: first_name.value,
-            last_name: last_name.value,
-            ci: ci.value,
-            email: email.value,
-            phone: phone.value
-        }
+        const formData = new FormData(e.currentTarget)
+        const data = Object.fromEntries(formData)
         // Iniciar
         setLoading(true)
 
+        const res = await fetch('/api/profile', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+
         // Hacer script para guardar los datos
         const response = {
-            status: 200,
-            json: () => {
+            status: res.ok ? 200 : res.status,
+            json: async () => {
                 return {
-                    details: ''
+                    details: (await res.json())['details']
                 }
             }
         }
@@ -52,7 +46,7 @@ export const Testing1 = () => {
             toaster.create({
                 title: (await response.json())['details'],
                 duration: 9000,
-                type: 'success'
+                type: 'info',
             })
         }
 
@@ -60,6 +54,15 @@ export const Testing1 = () => {
         setLoading(false)
 
     }
+
+    function handleOnchange(e: ChangeEvent<HTMLInputElement>): void {
+        setUser(prev => ({
+            ...prev!,
+            [e.target.name]: e.target.value
+        }))
+    }
+
+
 
     return (
         <Fragment>
@@ -91,23 +94,23 @@ export const Testing1 = () => {
                             </Field.Root>
                             <Field.Root>
                                 <Field.Label>Nombre</Field.Label>
-                                <Input type="text" name="first_name" value={user?.first_name} disabled={loading} />
+                                <Input type="text" name="first_name" value={user?.first_name} disabled={loading} onChange={handleOnchange} />
                             </Field.Root>
                             <Field.Root>
                                 <Field.Label>Apellidos</Field.Label>
-                                <Input type='text' name="last_name" value={user?.last_name} disabled={loading} />
+                                <Input type='text' name="last_name" value={user?.last_name} disabled={loading} onChange={handleOnchange} />
                             </Field.Root>
                             <Field.Root>
                                 <Field.Label>Carnet</Field.Label>
-                                <Input type='text' name="ci" value={user?.ci} disabled={loading} />
+                                <Input type='text' name="ci" value={user?.ci} disabled={loading} onChange={handleOnchange} />
                             </Field.Root>
                             <Field.Root>
                                 <Field.Label>Correo</Field.Label>
-                                <Input type='email' name="email" value={user?.email} disabled={loading} />
+                                <Input type='email' name="email" value={user?.email} disabled={loading} onChange={handleOnchange} />
                             </Field.Root>
                             <Field.Root>
                                 <Field.Label>Teléfono</Field.Label>
-                                <Input type='text' name="phone" value={user?.phone} disabled={loading} />
+                                <Input type='text' name="phone" value={user?.phone} disabled={loading} onChange={handleOnchange} />
                             </Field.Root>
                         </Stack>
                         <Stack gap="4" mt={4}>

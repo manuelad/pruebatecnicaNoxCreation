@@ -1,35 +1,51 @@
 import { Divider } from '@/components/Divider'
-import { Card, Stack, Text, useDialog } from '@chakra-ui/react'
-import { Fragment, useEffect, useState } from 'react'
+import { PaginationCustom } from '@/components/PaginationCustom'
 import { Toaster, toaster } from "@/components/ui/toaster"
-import { ProductCreateEdit } from './modals/ProductCreateEdit'
+import { scrollToElement } from '@/lib/settings'
+import { Card, Stack, Text, useDialog } from '@chakra-ui/react'
+import { useRouter } from 'next/router'
+import { Fragment, useEffect, useState } from 'react'
+import Swal from "sweetalert2"
+import withReactContent from "sweetalert2-react-content"
 import { BarAdd } from './component/BarAdd'
 import { TableProduct } from './component/TableProduct'
-import { PaginationCustom } from '@/components/PaginationCustom'
-import withReactContent from "sweetalert2-react-content"
-import Swal from "sweetalert2"
+import { ProductCreateEdit, ProductType } from './modals/ProductCreateEdit'
 
 export const Testing2 = () => {
     const [loading, setLoading] = useState(false)
-    const [data, setData] = useState([] as Array<any>)
-    const [initialize, setInitialize] = useState(undefined as undefined | any)
+    const [data, setData] = useState<ProductType[]>([])
+    const [initialize, setInitialize] = useState<ProductType | undefined>()
     const dialog = useDialog()
+    const [count, setCount] = useState(0)
+    const router = useRouter()
+    const { pageTest2 } = router.query
+    const page = Number(pageTest2) || undefined
+
+    useEffect(() => {
+        load(page || 1)
+        if (page === undefined) return
+        scrollToElement('test2')
+    }, [page])
 
     // Debe cargar los datos
-    const onLoad = async () => {
-        setLoading(true)
 
+    const load = async (p: number) => {
+        setLoading(true)
         // Fragmento a modificar con la carga de los datos
+        const res = await fetch(`/api/products?page=${p}`)
         const response = {
-            status: 200,
-            json: () => {
-                return []
+            status: res.ok ? 200 : res.status,
+            json: async () => {
+                return await res.json()
             }
         }
         // Fin
 
+
         if (response.status == 200) {
-            setData(await response.json())
+            const { products, count: total } = await response.json()
+            setCount(total)
+            setData(products)
         }
         else {
             toaster.create({
@@ -40,6 +56,11 @@ export const Testing2 = () => {
         }
 
         setLoading(false)
+    }
+
+    const onLoad = async () => {
+        await load(1)
+
     }
 
     // Debe eliminar un item
@@ -55,10 +76,11 @@ export const Testing2 = () => {
             preConfirm: async () => {
                 Swal.showLoading()
                 // Fragmento a agregar aca
+                const res = await fetch(`/api/products/${id}`, { method: 'DELETE' })
                 const response = {
-                    status: 200,
-                    json: () => {
-                        return []
+                    status: res.ok ? 200 : 400,
+                    json: async () => {
+                        return (await res.json())['details']
                     }
                 }
                 //End
@@ -129,7 +151,7 @@ export const Testing2 = () => {
                         onDelete={onDelete}
                     />
 
-                    <PaginationCustom />
+                    <PaginationCustom page={page} count={count} pageSearch='pageTest2' />
                 </Card.Body>
                 <Card.Footer />
             </Card.Root>
