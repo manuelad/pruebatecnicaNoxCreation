@@ -15,12 +15,13 @@ export const SelectCustom = ({
         items: options,
     })
 
+
     return (
-        <Select.Root collection={frameworks} onChange={(e: any) => onSave(e.target.value)} defaultValue={[value || '']}>
+        <Select.Root collection={frameworks} onChange={(e: any) => onSave(e.target.value)} >
             <Select.HiddenSelect />
             <Select.Control>
                 <Select.Trigger>
-                    <Select.ValueText placeholder="Elija una categoria" />
+                    <Select.ValueText placeholder={value || 'Elija una categoria'} />
                 </Select.Trigger>
                 <Select.IndicatorGroup>
                     <Select.Indicator />

@@ -32,7 +32,7 @@ export const TableProduct = ({
                         </Table.Cell>
                         <Table.Cell>
                             <SelectCustom
-                                value={product.categoryId}
+                                value={product?.category?.name}
                                 options={categories.map(e => ({
                                     value: e.id,
                                     label: e.name

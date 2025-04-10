@@ -4,7 +4,7 @@ import { Toaster, toaster } from "@/components/ui/toaster"
 import { scrollToElement } from '@/lib/settings'
 import { Card, Stack, Text, useDialog } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import Swal from "sweetalert2"
 import withReactContent from "sweetalert2-react-content"
 import { BarAdd } from './component/BarAdd'
@@ -18,14 +18,16 @@ export const Testing2 = () => {
     const dialog = useDialog()
     const [count, setCount] = useState(0)
     const router = useRouter()
-    const { pageTest2 } = router.query
-    const page = Number(pageTest2) || undefined
+    const pageRef = useRef<number | undefined>(undefined)
 
     useEffect(() => {
-        load(page || 1)
-        if (page === undefined) return
+        const query = router.query
+        pageRef.current = query && query.pageTest2 ? Number(query.pageTest2) :
+            (!query) ? 1 : !query.pageTest2 ? pageRef.current : Number(query.pageTest2)
+        load(pageRef.current || 1)
+        if (pageRef.current === undefined) return
         scrollToElement('test2')
-    }, [page])
+    }, [router.query])
 
     // Debe cargar los datos
 
@@ -151,7 +153,7 @@ export const Testing2 = () => {
                         onDelete={onDelete}
                     />
 
-                    <PaginationCustom page={page} count={count} pageSearch='pageTest2' />
+                    <PaginationCustom page={pageRef.current} count={count} pageTest='pageTest2' />
                 </Card.Body>
                 <Card.Footer />
             </Card.Root>

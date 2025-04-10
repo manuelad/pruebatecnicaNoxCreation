@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { Manager } from "@/backend/models/engine";
+import { Manager, sequelize } from "@/backend/models/engine";
 import { PAGE_SIZE } from "@/lib/settings";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -19,7 +19,11 @@ export default async function handler(
             }
             const products = (await Manager().Product.findAll({
                 where: { isRemove: false },
-                ...(p && queryPagination)
+                ...(p && queryPagination),
+                include: {
+                    model: sequelize.models.Category,
+                    as: 'category'
+                }
             })).toJSON();
             const count = await Manager().Product.count({ where: { isRemove: false } })
             res.status(200).json({ products, count });

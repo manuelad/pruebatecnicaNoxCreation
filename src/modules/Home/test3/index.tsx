@@ -5,7 +5,7 @@ import { Toaster, toaster } from "@/components/ui/toaster"
 import { scrollToElement } from '@/lib/settings'
 import { Button, Card, Flex, Progress, Stack, Text } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { FiRefreshCw } from 'react-icons/fi'
 import { ProductType } from '../test2/modals/ProductCreateEdit'
 import { TableProduct } from './component/TableProduct'
@@ -19,14 +19,14 @@ export const Testing3 = ({
     const [data, setData] = useState([] as Array<ProductType>)
     const [count, setCount] = useState(0)
     const router = useRouter()
-    const { pageTest3 } = router.query
-    const page = Number(pageTest3) || undefined
+    const pageRef = useRef<number | undefined>(undefined)
 
     useEffect(() => {
-        if (page === undefined) return
+        pageRef.current = Number(router.query.pageTest3) || undefined
+        if (pageRef.current === undefined) return
         scrollToElement('test3')
-        load(page)
-    }, [page])
+        load(pageRef.current)
+    }, [router.query])
     // Debe cargar los datos
 
     const load = async (p: number) => {
@@ -45,6 +45,7 @@ export const Testing3 = ({
 
         if (response.status == 200) {
             const { products, count: total } = await response.json()
+            console.log(products)
             setCount(total)
             setData(products)
         }
@@ -62,7 +63,7 @@ export const Testing3 = ({
 
 
     const onLoad = async () => {
-        await load(page || 1)
+        await load(pageRef.current || 1)
     }
 
 
@@ -150,7 +151,7 @@ export const Testing3 = ({
                         onSave={onSave}
                     />
 
-                    <PaginationCustom page={page} count={count} pageSearch='pageTest3' />
+                    <PaginationCustom page={pageRef.current} count={count} pageTest='pageTest3' />
                 </Card.Body>
                 <Card.Footer />
             </Card.Root>

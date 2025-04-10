@@ -1,3 +1,4 @@
+import { CategoryType } from "@/backend/Types/CategoryType"
 import { Toaster, toaster } from "@/components/ui/toaster"
 import { Button, CloseButton, Dialog, Field, Input, Portal, Stack, UseDialogReturn } from "@chakra-ui/react"
 import { FormEvent, Fragment, useState } from "react"
@@ -7,7 +8,8 @@ export type ProductType = {
     name: string
     price: number
     quantity: number
-    categoryId?: string
+    categoryId?: string,
+    category?: CategoryType
 }
 
 export const ProductCreateEdit = ({
